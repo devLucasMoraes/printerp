@@ -73,6 +73,8 @@ const PagePaths = {
 
 // Definir a URL base para recuperação de dados
 const URL_BASE = process.env.NEXT_PUBLIC_BACKEND_URL_API;
+console.log('NEXT_PUBLIC_BACKEND_URL_API:', process.env.NEXT_PUBLIC_BACKEND_URL_API);
+console.log('URL_BASE:', URL_BASE);
 
 // Exportar o objeto Environment aprimorado
 export const Environment = {
