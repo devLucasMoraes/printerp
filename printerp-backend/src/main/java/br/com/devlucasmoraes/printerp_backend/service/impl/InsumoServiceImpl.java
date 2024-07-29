@@ -2,19 +2,25 @@ package br.com.devlucasmoraes.printerp_backend.service.impl;
 
 import br.com.devlucasmoraes.printerp_backend.controller.dto.request.AcertoEstoqueDTO;
 import br.com.devlucasmoraes.printerp_backend.domain.model.Insumo;
+import br.com.devlucasmoraes.printerp_backend.domain.model.RequisicaoEstoqueItem;
 import br.com.devlucasmoraes.printerp_backend.domain.repository.InsumoRepository;
 import br.com.devlucasmoraes.printerp_backend.service.CategoriaService;
 import br.com.devlucasmoraes.printerp_backend.service.InsumoService;
 import br.com.devlucasmoraes.printerp_backend.service.exception.BusinessException;
 import br.com.devlucasmoraes.printerp_backend.service.exception.NotFoundException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 public class InsumoServiceImpl implements InsumoService {
@@ -117,5 +123,44 @@ public class InsumoServiceImpl implements InsumoService {
 
     public Boolean existsById(Long id) {
         return this.insumoRepository.existsById(id);
+    }
+
+    public EstimativaDuracao estimarDuracaoEstoque(Long insumoId) {
+        Insumo insumo = insumoRepository.findById(insumoId)
+                .orElseThrow(() -> new RuntimeException("Insumo não encontrado"));
+
+        BigDecimal estoqueAtual = insumo.getTotalEntradas().subtract(insumo.getTotalSaidas());
+        BigDecimal mediaConsumo = calcularMediaConsumo(insumoId);
+
+        if (mediaConsumo.compareTo(BigDecimal.ZERO) == 0) {
+            return null;
+        }
+
+        BigDecimal diasEstimados = estoqueAtual.divide(mediaConsumo, 2, BigDecimal.ROUND_HALF_UP);
+        LocalDate dataEstimada = LocalDate.now().plusDays(diasEstimados.longValue());
+
+        return new EstimativaDuracao(diasEstimados.doubleValue(), dataEstimada);
+    }
+
+    private BigDecimal calcularMediaConsumo(Long insumoId) {
+        PageRequest pageRequest = PageRequest.of(0, 5,
+                Sort.by(Sort.Direction.DESC, "dataRequisicao"));
+
+        List<RequisicaoEstoqueItem> requisicoes = requisicaoEstoqueItemRepository
+                .findByInsumoId(insumoId, pageRequest);
+
+        if (requisicoes.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+
+        BigDecimal consumoTotal = requisicoes.stream()
+                .map(RequisicaoEstoqueItem::getQuantidade)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        LocalDate primeiraData = requisicoes.get(requisicoes.size() - 1).getDataRequisicao();
+        LocalDate ultimaData = requisicoes.get(0).getDataRequisicao();
+        long diasTotais = ChronoUnit.DAYS.between(primeiraData, ultimaData) + 1; // +1 para incluir o último dia
+
+        return consumoTotal.divide(BigDecimal.valueOf(diasTotais), 2, BigDecimal.ROUND_HALF_UP);
     }
 }

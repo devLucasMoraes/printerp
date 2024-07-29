@@ -2,6 +2,7 @@ package br.com.devlucasmoraes.printerp_backend.controller;
 
 
 import br.com.devlucasmoraes.printerp_backend.controller.dto.request.AcertoEstoqueDTO;
+import br.com.devlucasmoraes.printerp_backend.controller.dto.response.EstimativaDuracaoDTO;
 import br.com.devlucasmoraes.printerp_backend.controller.dto.response.ShowInsumoDTO;
 import br.com.devlucasmoraes.printerp_backend.controller.dto.response.ShowSaldoDTO;
 import br.com.devlucasmoraes.printerp_backend.controller.filter.InsumoSearchFilter;
@@ -36,6 +37,15 @@ public record EstoqueController(InsumoService insumoService) {
         var materiais = insumoService.dynamicFindAll(filters.toSpec(), pageable);
         var materiaisDTO = materiais.map(ShowInsumoDTO::new);
         return ResponseEntity.ok(materiaisDTO);
+    }
+
+    @GetMapping("/{id}/estimativa-duracao")
+    public ResponseEntity<EstimativaDuracaoDTO> getEstimativaDuracao(@PathVariable Long id) {
+        EstimativaDuracaoDTO estimativa = insumoService.estimarDuracaoEstoque(id);
+        if (estimativa == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(estimativa);
     }
 
 }
