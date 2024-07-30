@@ -7,6 +7,7 @@ import br.com.devlucasmoraes.printerp_backend.controller.dto.response.ShowInsumo
 import br.com.devlucasmoraes.printerp_backend.controller.dto.response.ShowSaldoDTO;
 import br.com.devlucasmoraes.printerp_backend.controller.filter.InsumoSearchFilter;
 import br.com.devlucasmoraes.printerp_backend.service.InsumoService;
+import br.com.devlucasmoraes.printerp_backend.service.RequisicaoEstoqueService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/estoque")
 @CrossOrigin
-public record EstoqueController(InsumoService insumoService) {
+public record EstoqueController(InsumoService insumoService, RequisicaoEstoqueService requisicaoEstoqueService) {
 
 
     @GetMapping("saldo")
@@ -41,7 +42,7 @@ public record EstoqueController(InsumoService insumoService) {
 
     @GetMapping("/{id}/estimativa-duracao")
     public ResponseEntity<EstimativaDuracaoDTO> getEstimativaDuracao(@PathVariable Long id) {
-        EstimativaDuracaoDTO estimativa = insumoService.estimarDuracaoEstoque(id);
+        EstimativaDuracaoDTO estimativa = requisicaoEstoqueService.estimarDuracaoEstoque(id);
         if (estimativa == null) {
             return ResponseEntity.noContent().build();
         }
