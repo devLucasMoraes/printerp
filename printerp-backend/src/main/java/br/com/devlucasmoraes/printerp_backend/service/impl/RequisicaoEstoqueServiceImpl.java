@@ -176,6 +176,11 @@ public class RequisicaoEstoqueServiceImpl implements RequisicaoEstoqueService {
 
     }
 
+    public Page<EstimativaDuracaoDTO> estimarDuracaoEstoqueTodos(Pageable pageable) {
+        Page<Insumo> insumos = insumoService.findAll(pageable);
+        return insumos.map(insumo -> estimarDuracaoEstoque(insumo.getId()));
+    }
+
     public EstimativaDuracaoDTO estimarDuracaoEstoque(Long insumoId) {
 
         if (!insumoService.existsById(insumoId)) {
@@ -188,13 +193,13 @@ public class RequisicaoEstoqueServiceImpl implements RequisicaoEstoqueService {
         BigDecimal mediaConsumo = calcularMediaConsumo(insumoId);
 
         if (mediaConsumo.compareTo(BigDecimal.ZERO) == 0) {
-            return null;
+           return new EstimativaDuracaoDTO(insumo.getId(),mediaConsumo,null, null, insumo.getId(),insumo.getCategoria().getId() );
         }
 
         BigDecimal diasEstimados = estoqueAtual.divide(mediaConsumo, 2, BigDecimal.ROUND_HALF_UP);
         LocalDate dataEstimada = LocalDate.now().plusDays(diasEstimados.longValue());
 
-        return new EstimativaDuracaoDTO(mediaConsumo,diasEstimados, dataEstimada);
+        return new EstimativaDuracaoDTO(insumo.getId(),mediaConsumo,diasEstimados, dataEstimada, insumo.getId(),insumo.getCategoria().getId() );
     }
 
     private BigDecimal calcularMediaConsumo(Long insumoId) {

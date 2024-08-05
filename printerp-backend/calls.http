@@ -43,4 +43,4 @@ Content-Type: application/json
 
 ### Get estimativa
 
-GET http://localhost:8080/api/estoque/2/estimativa-duracao HTTP/1.1
+GET http://localhost:8080/api/estoque/estimativa-duracao HTTP/1.1

@@ -49,4 +49,10 @@ public record EstoqueController(InsumoService insumoService, RequisicaoEstoqueSe
         return ResponseEntity.ok(estimativa);
     }
 
+    @GetMapping("estimativa-duracao")
+    public ResponseEntity<Page<EstimativaDuracaoDTO>> getEstimativaDuracaoTodos(Pageable pageable) {
+        Page<EstimativaDuracaoDTO> estimativas = requisicaoEstoqueService.estimarDuracaoEstoqueTodos(pageable);
+        return ResponseEntity.ok(estimativas);
+    }
+
 }

@@ -4,8 +4,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record EstimativaDuracaoDTO(
+        Long id,
         BigDecimal mediaConsumo,
         BigDecimal dias,
-        LocalDate dataFim
+        LocalDate dataFim,
+        Long idInsumo,
+        Long idCategoria
 ) {
 }
