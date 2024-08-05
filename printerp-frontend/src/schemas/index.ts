@@ -160,6 +160,17 @@ export const saldoEstoqueSchema = z.object({
 
 export type TSaldoEstoque = z.infer<typeof saldoEstoqueSchema>;
 
+export const EstimativaEstoqueSchema = z.object({
+  id: z.number().optional(),
+  idCategoria: z.coerce.number(),
+  idInsumo: z.coerce.number(),
+  mediaConsumo: z.coerce.number(),
+  dias: z.coerce.number().nullable(),
+  dataFim: z.date().nullable(),
+});
+
+export type TEstimativaEstoque = z.infer<typeof EstimativaEstoqueSchema>;
+
 export const AcertoSchema = z.object({
   id: z.number().optional(),
   idMaterial: z.number(),

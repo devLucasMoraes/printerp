@@ -1,5 +1,6 @@
 import {
   IconBox,
+  IconBrandSpeedtest,
   IconCategoryPlus,
   IconChecklist,
   IconLayoutDashboard,
@@ -63,6 +64,12 @@ const Menuitems = [
     title: "Saldo",
     icon: IconScale,
     href: "/estoque/saldo",
+  },
+  {
+    id: "8",
+    title: "Estimativas",
+    icon: IconBrandSpeedtest,
+    href: "/estoque/estimativas",
   },
 ];
 

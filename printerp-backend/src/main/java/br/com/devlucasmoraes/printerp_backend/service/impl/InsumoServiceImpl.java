@@ -118,4 +118,5 @@ public class InsumoServiceImpl implements InsumoService {
     public Boolean existsById(Long id) {
         return this.insumoRepository.existsById(id);
     }
+
 }

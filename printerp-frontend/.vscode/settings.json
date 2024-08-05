@@ -1,6 +1,10 @@
 {
   "conventionalCommits.scopes": [
     "front-end",
+
+    "back-end",
+
     "infra"
+
   ]
 }
