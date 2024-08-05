@@ -1,6 +1,6 @@
 import { ApiInstance } from "@/api";
 import { Environment } from "@/environment";
-import { TInsumo, TSaldoEstoque } from "@/schemas";
+import { TEstimativaEstoque, TInsumo, TSaldoEstoque } from "@/schemas";
 import { TAutocompleteOption, TSpringPageData } from "@/types/models";
 import { BaseService } from "./BaseService";
 
@@ -10,16 +10,29 @@ export class EstoqueService extends BaseService<
   TSpringPageData<TAutocompleteOption>
 > {
   constructor() {
-    super("/estoque/saldo");
+    super("/estoque");
   }
 
   async getSaldo(
     page = 0,
     size = Environment.LIMITE_DE_LINHAS
   ): Promise<TSpringPageData<TInsumo>> {
-    const path = `/estoque?page=${page}&size=${size}`;
+    const path = `/saldo?page=${page}&size=${size}`;
 
     const response = await ApiInstance.get<TSpringPageData<TInsumo>>(
+      `${this.endpoint}${path}`
+    );
+
+    return response.data;
+  }
+
+  async getEstimativaDuracaoTodos(
+    page = 0,
+    size = Environment.LIMITE_DE_LINHAS
+  ): Promise<TSpringPageData<TEstimativaEstoque>> {
+    const path = `/estimativa-duracao?page=${page}&size=${size}`;
+
+    const response = await ApiInstance.get<TSpringPageData<TEstimativaEstoque>>(
       `${this.endpoint}${path}`
     );
 

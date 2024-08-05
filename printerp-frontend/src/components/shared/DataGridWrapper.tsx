@@ -2,6 +2,7 @@ import { Box, Card, Typography } from "@mui/material";
 import {
   DataGrid,
   GridColDef,
+  GridRowIdGetter,
   GridSlots,
   GridToolbarContainer,
   GridValidRowModel,
@@ -39,6 +40,7 @@ export const DataGridWrapper = ({
   rows,
   totalRowCount,
   setPaginationModel,
+  customGetRowId,
   paginationModel,
   isLoading,
   createRoute,
@@ -62,6 +64,7 @@ export const DataGridWrapper = ({
       pageSize: number;
     }>
   >;
+  customGetRowId?: GridRowIdGetter;
 }) => {
   const [rowCountState, setRowCountState] = useState(totalRowCount || 0);
 
@@ -76,6 +79,7 @@ export const DataGridWrapper = ({
       <DataGrid
         autoHeight
         rows={rows ?? []}
+        getRowId={customGetRowId || ((row) => row.id)}
         columns={columns}
         pageSizeOptions={[5, 10, 25, 50, 100]}
         disableRowSelectionOnClick

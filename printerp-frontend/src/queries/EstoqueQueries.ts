@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { TSaldoEstoque } from "@/schemas";
-import { EstoqueService } from "@/services/EstoqueService";
-import { insumoService } from "@/services/InsumoService";
+import { estoqueService, EstoqueService } from "@/services/EstoqueService";
 import { queryOptions } from "@tanstack/react-query";
 import { QueryBase } from "./QueryBase";
 
@@ -10,10 +9,17 @@ class EstoqueQueries extends QueryBase<TSaldoEstoque> {
     super("ESTOQUE-KEY", new EstoqueService());
   }
 
-  getEstoque(page: number, pageSize: number) {
+  getSaldo(page: number, pageSize: number) {
     return queryOptions({
       queryKey: [this.resourceKey, page, pageSize],
-      queryFn: () => insumoService.getEstoque(page, pageSize),
+      queryFn: () => estoqueService.getSaldo(page, pageSize),
+    });
+  }
+
+  getEstimativaDuracaoTodos(page: number, pageSize: number) {
+    return queryOptions({
+      queryKey: [this.resourceKey, page, pageSize],
+      queryFn: () => estoqueService.getEstimativaDuracaoTodos(page, pageSize),
     });
   }
 
